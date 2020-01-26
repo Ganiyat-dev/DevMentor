@@ -1,11 +1,12 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
+const chalk = require('chalk');
 const connectDb = require('./config/db.js');
 
 // handle uncaught exception
 process.on('uncaughtException', err => {
-  console.log(`uncaught exception: ${err.message}`);
+  console.log(chalk.red(`uncaught exception: ${err.message}`));
   process.exit(1);
 });
 
@@ -29,13 +30,15 @@ const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, () => {
   console.log(
-    `server is in ${process.env.NODE_ENV} mode & listening on port ${process.env.PORT}`
+    chalk.blue(
+      `server is in ${process.env.NODE_ENV} mode & listening on port ${process.env.PORT}`
+    )
   );
 });
 
 //unhandled promise rejection
 process.on('unhandledRejection', err => {
-  console.log(`unhandled rejection: ${err.message}`);
+  console.log(chalk.red(`unhandled rejection: ${err.message}`));
   server.close(() => {
     process.exit(1);
   });

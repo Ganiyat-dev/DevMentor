@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const chalk = require('chalk');
 
 const connectDB = async () => {
   try {
@@ -8,9 +9,9 @@ const connectDB = async () => {
       useUnifiedTopology: true,
       useNewUrlParser: true
     });
-    console.log(`MongoDB connected: ${conn.connection.host}`);
+    console.log(chalk.green(`MongoDB connected: ${conn.connection.host}`));
   } catch (err) {
-    console.log(err);
+    console.log(chalk.red(err.message));
   }
 };
 
