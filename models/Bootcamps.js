@@ -33,25 +33,25 @@ const BootcampSchema = new Schema({
     type: String,
     required: [true, 'please add an address']
   },
-  location: {
-    //GEOJSON
-    type: {
-      type: String,
-      enum: ['Point'],
-      required: true
-    },
-    coordinates: {
-      type: [Number],
-      required: true,
-      index: '2dsphere'
-    },
-    formattedAddress: String,
-    street: String,
-    city: String,
-    state: String,
-    zipcode: String,
-    country: String
-  },
+  // location: {
+  //   //GEOJSON
+  //   type: {
+  //     type: String,
+  //     enum: ['Point'],
+  //     required: true
+  //   },
+  //   coordinates: {
+  //     type: [Number],
+  //     required: true,
+  //     index: '2dsphere'
+  //   },
+  //   formattedAddress: String,
+  //   street: String,
+  //   city: String,
+  //   state: String,
+  //   zipcode: String,
+  //   country: String
+  // },
   careers: {
     type: [String],
     required: true,

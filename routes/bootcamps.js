@@ -16,7 +16,7 @@ router
 router
   .route('/:id')
   .get(getOneBootcamps)
-  .put(updateBootcamps)
+  .patch(updateBootcamps)
   .delete(deleteBootcamps);
 
 module.exports = router;

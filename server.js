@@ -15,6 +15,9 @@ const bootcampsRoutes = require('./routes/bootcamps');
 
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 dotenv.config({ path: './config/config.env' });
 
 //connect db
