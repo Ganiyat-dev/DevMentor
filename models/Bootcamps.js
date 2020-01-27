@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const slugify = require('slugify');
 
 const { Schema } = mongoose;
 
@@ -100,6 +101,15 @@ const BootcampSchema = new Schema({
     type: Date,
     default: Date.now
   }
+});
+
+// add slug before save
+BootcampSchema.pre('save', function(next) {
+  this.slug = slugify(this.name, {
+    replacement: '-',
+    lower: true
+  });
+  next();
 });
 
 module.exports = mongoose.model('Bootcamps', BootcampSchema);
