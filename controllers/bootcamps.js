@@ -36,10 +36,11 @@ exports.getOneBootcamps = async (req, res, next) => {
       data: bootcamp
     });
   } catch (err) {
-    res.status(404).json({
-      success: false,
-      msg: err
-    });
+    // res.status(404).json({
+    //   success: false,
+    //   msg: err
+    // });
+    next(err);
   }
 };
 

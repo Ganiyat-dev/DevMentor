@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const chalk = require('chalk');
 const connectDb = require('./config/db.js');
+const errorHandler = require('./middleware/errorHandler');
 
 // handle uncaught exception
 process.on('uncaughtException', err => {
@@ -28,6 +29,9 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use('/api/v1/bootcamps', bootcampsRoutes);
+
+//errors
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
