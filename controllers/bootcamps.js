@@ -31,7 +31,7 @@ exports.getOneBootcamps = async (req, res, next) => {
     if (!bootcamp) {
       return next(
         new ErrorResponse(
-          `No Bootcamp found with this id: ${req.params.id}`,
+          `No Resource found with this id: ${req.params.id}`,
           404
         )
       );
@@ -42,9 +42,7 @@ exports.getOneBootcamps = async (req, res, next) => {
       data: bootcamp
     });
   } catch (err) {
-    next(
-      new ErrorResponse(`No Bootcamp found with this id: ${req.params.id}`, 404)
-    );
+    next(err);
   }
 };
 
