@@ -14,10 +14,7 @@ exports.getBootcamps = async (req, res, next) => {
       data: bootcamp
     });
   } catch (err) {
-    res.status(404).json({
-      success: false,
-      msg: err
-    });
+    next(err);
   }
 };
 
@@ -58,10 +55,7 @@ exports.createBootcamps = async (req, res, next) => {
       data: bootcamp
     });
   } catch (err) {
-    res.status(404).json({
-      success: false,
-      msg: err
-    });
+    next(err);
   }
 };
 
@@ -80,7 +74,12 @@ exports.updateBootcamps = async (req, res, next) => {
     );
 
     if (!bootcamp) {
-      return res.status(404).json({ msg: 'resource not found' });
+      return next(
+        new ErrorResponse(
+          `No Resource found with this id: ${req.params.id}`,
+          404
+        )
+      );
     }
 
     res.status(200).json({
@@ -88,10 +87,7 @@ exports.updateBootcamps = async (req, res, next) => {
       data: bootcamp
     });
   } catch (err) {
-    res.status(404).json({
-      success: false,
-      msg: err
-    });
+    next(err);
   }
 };
 
@@ -103,7 +99,12 @@ exports.deleteBootcamps = async (req, res, next) => {
     const bootcamp = await Bootcamps.findByIdAndDelete(req.params.id);
 
     if (!bootcamp) {
-      return res.status(404).json({ msg: 'resource not found' });
+      return next(
+        new ErrorResponse(
+          `No Resource found with this id: ${req.params.id}`,
+          404
+        )
+      );
     }
 
     res.status(204).json({
@@ -111,9 +112,6 @@ exports.deleteBootcamps = async (req, res, next) => {
       data: null
     });
   } catch (err) {
-    res.status(404).json({
-      success: false,
-      msg: err
-    });
+    next(err);
   }
 };
