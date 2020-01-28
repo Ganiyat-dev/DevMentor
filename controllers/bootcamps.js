@@ -31,10 +31,37 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   } else {
     filteredQuery = filteredQuery.select('-__v');
   }
+
+  // 4 PAGINATION
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 1;
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const total = await Bootcamps.countDocuments();
+
+  filteredQuery = filteredQuery.skip(startIndex).limit(limit);
+
+  // pagination result
+  const paginate = {};
+  if (endIndex < total) {
+    paginate.next = {
+      page: page + 1,
+      limit
+    };
+  }
+
+  if (startIndex > 0) {
+    paginate.prev = {
+      page: page - 1,
+      limit
+    };
+  }
+
   const bootcamp = await filteredQuery;
   res.status(200).json({
     success: true,
     count: bootcamp.length,
+    paginate,
     data: bootcamp
   });
 });
