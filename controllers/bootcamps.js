@@ -83,3 +83,30 @@ exports.deleteBootcamps = asyncHandler(async (req, res, next) => {
     data: null
   });
 });
+
+//@desc       GET Bootcamps by Radius
+//@route      Delete api/v1/bootcamps/radius/:distance/:lng/:lat/:unit
+//@access     private
+exports.getBootcampsByRadius = asyncHandler(async (req, res, next) => {
+  const { distance, unit, lng, lat } = req.params;
+
+  if (!lat || !lng) {
+    return next(
+      new ErrorResponse('please provide latitude and longitude', 404)
+    );
+  }
+
+  const radius = unit === 'km' ? distance / 6371 : distance / 39588;
+
+  const bootcamps = await Bootcamps.find({
+    location: {
+      $geoWithin: { $centerSphere: [[lng, lat], radius] }
+    }
+  });
+
+  res.status(200).json({
+    success: true,
+    count: bootcamps.length,
+    bootcamps
+  });
+});
