@@ -14,9 +14,17 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     /\b(gt|gte|lt|lte|in)\b/g,
     match => `$${match}`
   );
-  const filteredQuery = Bootcamps.find(JSON.parse(queryString));
+  let filteredQuery = Bootcamps.find(JSON.parse(queryString));
+
+  // 2  SORTING
+  if (req.query.sort) {
+    const sortby = req.query.sort.split(',').join(' ');
+    filteredQuery = filteredQuery.sort(sortby);
+  } else {
+    filteredQuery = filteredQuery.sort('createdAt');
+  }
+  
   const bootcamp = await filteredQuery;
-   
   res.status(200).json({
     success: true,
     count: bootcamp.length,
