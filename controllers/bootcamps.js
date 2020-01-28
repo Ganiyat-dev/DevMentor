@@ -6,8 +6,17 @@ const asyncHandler = require('../middleware/async');
 //@route      Get api/v1/bootcamps
 //@access     public
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamps.find();
-
+  // 1) ADVANCE FILTERING
+  const query = { ...req.query };
+  const excluded = ['page', 'sort', 'fields', 'limit'];
+  excluded.forEach(el => delete query[el]);
+  const queryString = JSON.stringify(query).replace(
+    /\b(gt|gte|lt|lte|in)\b/g,
+    match => `$${match}`
+  );
+  const filteredQuery = Bootcamps.find(JSON.parse(queryString));
+  const bootcamp = await filteredQuery;
+   
   res.status(200).json({
     success: true,
     count: bootcamp.length,
