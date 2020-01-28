@@ -13,6 +13,7 @@ process.on('uncaughtException', err => {
 dotenv.config({ path: './config/config.env' });
 //routes
 const bootcampsRoutes = require('./routes/bootcamps');
+const coursesRoutes = require('./routes/course');
 
 const app = express();
 
@@ -27,6 +28,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use('/api/v1/bootcamps', bootcampsRoutes);
+app.use('/api/v1/courses', coursesRoutes);
 
 //errors
 app.use(errorHandler);
