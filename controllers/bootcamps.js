@@ -23,7 +23,14 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   } else {
     filteredQuery = filteredQuery.sort('createdAt');
   }
-  
+
+  // 3  FIELDS LIMITING
+  if (req.query.fields) {
+    const fields = req.query.fields.split(',').join(' ');
+    filteredQuery = filteredQuery.select(fields);
+  } else {
+    filteredQuery = filteredQuery.select('-__v');
+  }
   const bootcamp = await filteredQuery;
   res.status(200).json({
     success: true,
