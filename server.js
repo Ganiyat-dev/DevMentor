@@ -14,10 +14,10 @@ process.on('uncaughtException', err => {
 });
 dotenv.config({ path: './config/config.env' });
 
-
 //routes
 const bootcampsRoutes = require('./routes/bootcamps');
 const coursesRoutes = require('./routes/course');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -37,6 +37,7 @@ app.use(fileupload());
 
 app.use('/api/v1/bootcamps', bootcampsRoutes);
 app.use('/api/v1/courses', coursesRoutes);
+app.use('/api/v1/auth', authRoutes);
 
 //errors
 app.use(errorHandler);
