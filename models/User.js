@@ -52,5 +52,13 @@ UserSchema.methods.getJwtToken = async function() {
   });
 };
 
+// compare password
+UserSchema.methods.comparePassword = async function(
+  userPassoword,
+  providedPassword
+) {
+  return await bcrypt.compare(providedPassword, userPassoword);
+};
+
 const Users = mongoose.model('Users', UserSchema);
 module.exports = Users;
