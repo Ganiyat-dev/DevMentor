@@ -20,7 +20,7 @@ connectDb();
 
 const importData = async () => {
   try {
-    // await Bootcamps.create(bootcampData);
+    await Bootcamps.create(bootcampData);
     await Courses.create(coursesData);
     console.log('data imported successfully');
     process.exit();
@@ -31,7 +31,7 @@ const importData = async () => {
 
 const deleteData = async () => {
   try {
-    // await Bootcamps.deleteMany();
+    await Bootcamps.deleteMany();
     await Courses.deleteMany();
     console.log('data deleted successfully');
     process.exit();
