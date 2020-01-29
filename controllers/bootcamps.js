@@ -1,3 +1,4 @@
+const path = require('path');
 const Bootcamps = require('../models/Bootcamps');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
@@ -14,7 +15,9 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     /\b(gt|gte|lt|lte|in)\b/g,
     match => `$${match}`
   );
-  let filteredQuery = Bootcamps.find(JSON.parse(queryString)).populate('courses');
+  let filteredQuery = Bootcamps.find(JSON.parse(queryString)).populate(
+    'courses'
+  );
 
   // 2  SORTING
   if (req.query.sort) {
@@ -129,7 +132,7 @@ exports.deleteBootcamps = asyncHandler(async (req, res, next) => {
     );
   }
 
-   bootcamp.remove();
+  bootcamp.remove();
 
   res.status(204).json({
     success: true,
@@ -161,5 +164,53 @@ exports.getBootcampsByRadius = asyncHandler(async (req, res, next) => {
     success: true,
     count: bootcamps.length,
     bootcamps
+  });
+});
+
+//@desc       upload Bootcamps image
+//@route      Patch api/v1/bootcamps/:id/photo
+//@access     private
+exports.fileupload = asyncHandler(async (req, res, next) => {
+  const bootcamp = await Bootcamps.findById(req.params.id);
+
+  if (!bootcamp) {
+    return next(
+      new ErrorResponse(`No Resource found with this id: ${req.params.id}`, 404)
+    );
+  }
+
+  //check if file exists
+  if (!req.files) {
+    return next(new ErrorResponse(`please upload a file`, 400));
+  }
+
+  const { file } = req.files;
+  //check if the file is an image
+  if (!file.mimetype.startsWith('image')) {
+    return next(new ErrorResponse(`please upload an image file`, 400));
+  }
+
+  //check if file size is more than 1mb
+  if (file.size > process.env.FILE_UPLOADS_SIZE) {
+    return next(
+      new ErrorResponse(`image file size must not be more than 1mb`, 400)
+    );
+  }
+
+  //create custom file name
+  file.name = `photo-${bootcamp._id}${path.parse(file.name).ext}`;
+
+  //store the file
+  file.mv(`${process.env.FILE_PATH}/${file.name}`, async err => {
+    if (err) {
+      console.error(err);
+      return next(new ErrorResponse(`problem with image upload`, 500));
+    }
+    //save filename to db
+    await Bootcamps.findByIdAndUpdate(req.params.id, { photo: file.name });
+    res.status(200).json({
+      success: true,
+      data: file.name
+    });
   });
 });

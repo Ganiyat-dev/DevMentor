@@ -1,7 +1,9 @@
+const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const chalk = require('chalk');
+const fileupload = require('express-fileupload');
 const connectDb = require('./config/db.js');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -11,6 +13,8 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 dotenv.config({ path: './config/config.env' });
+
+
 //routes
 const bootcampsRoutes = require('./routes/bootcamps');
 const coursesRoutes = require('./routes/course');
@@ -19,6 +23,7 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 //connect db
 connectDb();
@@ -26,6 +31,9 @@ connectDb();
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('tiny'));
 }
+
+//file upload
+app.use(fileupload());
 
 app.use('/api/v1/bootcamps', bootcampsRoutes);
 app.use('/api/v1/courses', coursesRoutes);
