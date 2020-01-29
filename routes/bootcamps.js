@@ -9,6 +9,10 @@ const {
   fileupload
 } = require('../controllers/bootcamps');
 
+//advance results
+const Bootcamps = require('../models/Bootcamps');
+const advanceResults = require('../middleware/advanceResults');
+
 //include other resource router
 const coursesRouter = require('./course');
 
@@ -20,7 +24,7 @@ router.route('/radius/:distance/:lng/:lat/:unit').get(getBootcampsByRadius);
 router.route('/:id/photo').patch(fileupload);
 router
   .route('/')
-  .get(getBootcamps)
+  .get(advanceResults(Bootcamps, 'courses'), getBootcamps)
   .post(createBootcamps);
 router
   .route('/:id')
