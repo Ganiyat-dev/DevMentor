@@ -10,7 +10,7 @@ const errorHandler = require('./middleware/errorHandler');
 
 // handle uncaught exception
 process.on('uncaughtException', err => {
-  console.log(chalk.red(`uncaught exception: ${err.message}`));
+  console.log(chalk.red(`uncaught exception: ${err.stack}`));
   process.exit(1);
 });
 dotenv.config({ path: './config/config.env' });

@@ -9,7 +9,8 @@ const {
   fileupload
 } = require('../controllers/bootcamps');
 
-const protect = require('../middleware/protect');
+const { protect, authorize } = require('../middleware/protect');
+
 //advance results
 const Bootcamps = require('../models/Bootcamps');
 const advanceResults = require('../middleware/advanceResults');
@@ -22,15 +23,17 @@ const router = express.Router();
 router.use('/:bootcampId/courses', coursesRouter);
 
 router.route('/radius/:distance/:lng/:lat/:unit').get(getBootcampsByRadius);
-router.route('/:id/photo').patch(fileupload);
+router
+  .route('/:id/photo')
+  .patch(protect, authorize('publisher', 'admin'), fileupload);
 router
   .route('/')
   .get(advanceResults(Bootcamps, 'courses'), getBootcamps)
-  .post(protect, createBootcamps);
+  .post(protect, authorize('publisher', 'admin'), createBootcamps);
 router
   .route('/:id')
   .get(getOneBootcamps)
-  .patch(protect, updateBootcamps)
-  .delete(protect, deleteBootcamps);
+  .patch(protect, authorize('publisher', 'admin'), updateBootcamps)
+  .delete(protect, authorize('publisher', 'admin'), deleteBootcamps);
 
 module.exports = router;
