@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const chalk = require('chalk');
 const fileupload = require('express-fileupload');
+const cookieParser = require('cookie-parser');
 const connectDb = require('./config/db.js');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -24,6 +25,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
 
 //connect db
 connectDb();
