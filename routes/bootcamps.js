@@ -9,6 +9,7 @@ const {
   fileupload
 } = require('../controllers/bootcamps');
 
+const protect = require('../middleware/protect');
 //advance results
 const Bootcamps = require('../models/Bootcamps');
 const advanceResults = require('../middleware/advanceResults');
@@ -25,11 +26,11 @@ router.route('/:id/photo').patch(fileupload);
 router
   .route('/')
   .get(advanceResults(Bootcamps, 'courses'), getBootcamps)
-  .post(createBootcamps);
+  .post(protect, createBootcamps);
 router
   .route('/:id')
   .get(getOneBootcamps)
-  .patch(updateBootcamps)
-  .delete(deleteBootcamps);
+  .patch(protect, updateBootcamps)
+  .delete(protect, deleteBootcamps);
 
 module.exports = router;

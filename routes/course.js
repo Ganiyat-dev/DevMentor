@@ -10,6 +10,8 @@ const {
   deleteCourse
 } = require('../controllers/courses');
 
+const protect = require('../middleware/protect');
+
 //advance results
 const Courses = require('../models/Courses');
 const advanceResults = require('../middleware/advanceResults');
@@ -23,11 +25,11 @@ router
     }),
     getCourse
   )
-  .post(createCourse);
+  .post(protect, createCourse);
 router
   .route('/:id')
   .get(getOneCourse)
-  .patch(updateCourse)
-  .delete(deleteCourse);
+  .patch(protect, updateCourse)
+  .delete(protect, deleteCourse);
 
 module.exports = router;

@@ -14,8 +14,8 @@ const sendToken = async function(user, statusCode, res) {
   };
 
   if (process.env.NODE_ENV === 'production') {
-     options.secure = true;
-  };
+    options.secure = true;
+  }
 
   res
     .status(statusCode)
@@ -61,4 +61,17 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   sendToken(user, 200, res);
+});
+
+//@desc       Get logged in Users
+//@route      GET api/v1/auth/me
+//@access     private
+exports.getMe = asyncHandler(async (req, res, next) => {
+  // console.log(req.user)
+  const user = await Users.findById(req.user.id);
+
+  res.status(200).json({
+    success: true,
+    data: user
+  });
 });
