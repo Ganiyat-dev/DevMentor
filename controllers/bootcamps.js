@@ -58,16 +58,27 @@ exports.createBootcamps = asyncHandler(async (req, res, next) => {
 //@route      PUT api/v1/bootcamps/:id
 //@access     private
 exports.updateBootcamps = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamps.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true
-  });
+  let bootcamp = await Bootcamps.findById(req.params.id);
 
   if (!bootcamp) {
     return next(
       new ErrorResponse(`No Resource found with this id: ${req.params.id}`, 404)
     );
   }
+  //check if he is not the publisher or admin
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new ErrorResponse(
+        `the user ${req.user.name} is not authorize to perform this action`,
+        401
+      )
+    );
+  }
+
+  bootcamp = await Bootcamps.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true
+  });
 
   res.status(200).json({
     success: true,
@@ -87,6 +98,15 @@ exports.deleteBootcamps = asyncHandler(async (req, res, next) => {
     );
   }
 
+  //check if he is not admin or the publisher
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new ErrorResponse(
+        `the user ${req.user.name} is not authorize to perform this action`,
+        401
+      )
+    );
+  }
   bootcamp.remove();
 
   res.status(204).json({
@@ -134,6 +154,15 @@ exports.fileupload = asyncHandler(async (req, res, next) => {
     );
   }
 
+  //check if he is not admin or the publisher
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new ErrorResponse(
+        `the user ${req.user.name} is not authorize to perform this action`,
+        401
+      )
+    );
+  }
   //check if file exists
   if (!req.files) {
     return next(new ErrorResponse(`please upload a file`, 400));
