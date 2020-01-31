@@ -1,6 +1,7 @@
 const Users = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
+const sendEmail = require('../utils/email');
 
 //send token via cookie and response body
 const sendToken = async function(user, statusCode, res) {
@@ -98,9 +99,30 @@ exports.forgetpassword = asyncHandler(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
 
-  res.status(200).json({
-    success: true,
-    resetToken,
-    data: user
-  });
+  const replyURL = `${req.protocol}://${req.get(
+    'host'
+  )}/api/v1/resetpassword/${resetToken}`;
+  const message = `You recieve the message because you requested that you have forgoten your password \n make a PUT request to ${replyURL} \n if you didn't forget your password, please ignore this email`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Your Password Reset Token',
+      message
+    });
+
+    res.status(200).json({
+      success: true,
+      msg: 'reset password email sent successfully'
+    });
+  } catch (err) {
+    console.log(`Email: ${err.message}`);
+    user.forgetPasswordResetToken = undefined;
+    user.forgetPasswordExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    return next(
+      new ErrorResponse('your email could not be sent. try again', 500)
+    );
+  }
 });
