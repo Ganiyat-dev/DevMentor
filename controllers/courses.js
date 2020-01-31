@@ -57,6 +57,15 @@ exports.createCourse = asyncHandler(async (req, res, next) => {
       )
     );
   }
+  // check if user is the publisher or and admin
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new ErrorResponse(
+        `the user ${req.user.name} is not authorize to perform this action`,
+        401
+      )
+    );
+  }
   const course = await Courses.create(req.body);
 
   res.status(201).json({
@@ -76,6 +85,16 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`No Resource found with this id: ${req.params.id}`, 404)
     );
   }
+  // check if user is the publisher or and admin
+  if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new ErrorResponse(
+        `the user ${req.user.name} is not authorize to perform this action`,
+        401
+      )
+    );
+  }
+
   course = await Courses.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true
@@ -96,6 +115,16 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
   if (!course) {
     return next(
       new ErrorResponse(`No Resource found with this id: ${req.params.id}`, 404)
+    );
+  }
+
+  // check if user is the publisher or and admin
+  if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new ErrorResponse(
+        `the user ${req.user.name} is not authorize to perform this action`,
+        401
+      )
     );
   }
 
