@@ -75,3 +75,32 @@ exports.getMe = asyncHandler(async (req, res, next) => {
     data: user
   });
 });
+
+//@desc       forget password
+//@route      POST api/v1/auth/forgetpassword
+//@access     public
+exports.forgetpassword = asyncHandler(async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return next(new ErrorResponse('email is required', 400));
+  }
+
+  const user = await Users.findOne({ email });
+
+  if (!user) {
+    return next(
+      new ErrorResponse('this email is not registered on this platform', 404)
+    );
+  }
+
+  const resetToken = user.sendResetToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    success: true,
+    resetToken,
+    data: user
+  });
+});
