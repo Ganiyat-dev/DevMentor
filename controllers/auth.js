@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const Users = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
@@ -101,7 +102,7 @@ exports.forgetpassword = asyncHandler(async (req, res, next) => {
 
   const replyURL = `${req.protocol}://${req.get(
     'host'
-  )}/api/v1/resetpassword/${resetToken}`;
+  )}/api/v1/auth/resetpassword/${resetToken}`;
   const message = `You recieve the message because you requested that you have forgoten your password \n make a PUT request to ${replyURL} \n if you didn't forget your password, please ignore this email`;
 
   try {
@@ -124,5 +125,35 @@ exports.forgetpassword = asyncHandler(async (req, res, next) => {
     return next(
       new ErrorResponse('your email could not be sent. try again', 500)
     );
+  }
+});
+
+//@desc       reset password
+//@route      PATCH api/v1/auth/resetpassword/:token
+//@access     public
+exports.resetpassword = asyncHandler(async (req, res, next) => {
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const user = await Users.findOne({
+    forgetPasswordResetToken: hashedToken,
+    forgetPasswordExpires: { $gte: Date.now() }
+  });
+
+  if (!user) {
+    return next('Invalid Token ', 400);
+  }
+
+  try {
+    user.password = req.body.password;
+    user.forgetPasswordResetToken = undefined;
+    user.forgetPasswordExpires = undefined;
+    await user.save();
+
+    sendToken(user, 200, res);
+  } catch (err) {
+    console.log(err.message);
   }
 });
