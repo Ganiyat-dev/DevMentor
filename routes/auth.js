@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   register,
   login,
+  logout,
   getMe,
   forgetpassword,
   resetpassword,
@@ -14,6 +15,7 @@ const { protect } = require('../middleware/protect');
 
 router.post('/register', register);
 router.post('/login', login);
+router.get('/logout', logout);
 router.post('/forgetpassword', forgetpassword);
 router.patch('/resetpassword/:token', resetpassword);
 
