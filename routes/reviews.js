@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router({ mergeParams: true });
 
-const { getReviews } = require('../controllers/reviews');
+const { getReviews, getOneReview } = require('../controllers/reviews');
 
 // const { protect, authorize } = require('../middleware/protect');
 
@@ -17,5 +17,7 @@ router.route('/').get(
   }),
   getReviews
 );
+
+router.route('/:id').get(getOneReview);
 
 module.exports = router;

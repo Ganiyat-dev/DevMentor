@@ -18,3 +18,21 @@ exports.getReviews = asyncHandler(async (req, res, next) => {
     res.status(200).json(res.advanceResults);
   }
 });
+
+//@desc  Get single review
+//@route Get api/v1/reviews/:id
+//@access private
+exports.getOneReview = asyncHandler(async (req, res, next) => {
+  const review = await Reviews.findById(req.params.id);
+
+  if (!review) {
+    return next(
+      new ErrorResponse(`No resource found with this id: ${req.params.id}`, 404)
+    );
+  }
+
+  res.status(200).json({
+    status: true,
+    data: review
+  });
+});
