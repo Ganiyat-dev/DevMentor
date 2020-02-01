@@ -64,3 +64,58 @@ exports.CreateReview = asyncHandler(async (req, res, next) => {
     data: review
   });
 });
+
+//@desc  Update review
+//@route Get api/v1/reviews/:id
+//@access private
+exports.updateReview = asyncHandler(async (req, res, next) => {
+  let review = await Reviews.findById(req.params.id);
+
+  if (!review) {
+    return next(
+      new ErrorResponse(`No resource found with this id: ${req.params.id}`, 404)
+    );
+  }
+
+  if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new ErrorResponse(`You are not authorize to perform this action`, 401)
+    );
+  }
+
+  review = await Reviews.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true
+  });
+
+  res.status(200).json({
+    status: true,
+    data: review
+  });
+});
+
+//@desc  delete review
+//@route Get api/v1/reviews/:id
+//@access private
+exports.deleteReview = asyncHandler(async (req, res, next) => {
+  let review = await Reviews.findById(req.params.id);
+
+  if (!review) {
+    return next(
+      new ErrorResponse(`No resource found with this id: ${req.params.id}`, 404)
+    );
+  }
+
+  if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(
+      new ErrorResponse(`You are not authorize to perform this action`, 401)
+    );
+  }
+
+  await Reviews.findByIdAndRemove(req.params.id);
+
+  res.status(200).json({
+    status: true,
+    data: {}
+  });
+});

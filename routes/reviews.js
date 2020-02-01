@@ -5,7 +5,9 @@ const router = express.Router({ mergeParams: true });
 const {
   getReviews,
   getOneReview,
-  CreateReview
+  CreateReview,
+  updateReview,
+  deleteReview
 } = require('../controllers/reviews');
 
 const { protect, authorize } = require('../middleware/protect');
@@ -25,6 +27,10 @@ router
   )
   .post(protect, authorize('user', 'admin'), CreateReview);
 
-router.route('/:id').get(getOneReview);
+router
+  .route('/:id')
+  .get(getOneReview)
+  .patch(protect, authorize('user', 'admin'), updateReview)
+  .delete(protect, authorize('user', 'admin'), deleteReview);
 
 module.exports = router;
