@@ -35,5 +35,7 @@ const ReviewsSchema = new Schema({
   }
 });
 
+ReviewsSchema.index({ bootcamp: 1, user: 1 }, { unique: true });
+
 const Reviews = mongoose.model('Reviews', ReviewsSchema);
 module.exports = Reviews;
