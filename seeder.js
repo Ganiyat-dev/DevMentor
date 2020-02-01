@@ -27,9 +27,9 @@ connectDb();
 
 const importData = async () => {
   try {
-    // await Bootcamps.create(bootcampData);
-    // await Courses.create(coursesData);
-    // await Users.create(UsersData);
+    await Bootcamps.create(bootcampData);
+    await Courses.create(coursesData);
+    await Users.create(UsersData);
     await Reviews.create(reviewsData);
     console.log('data imported successfully');
     process.exit();
