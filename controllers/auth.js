@@ -157,3 +157,49 @@ exports.resetpassword = asyncHandler(async (req, res, next) => {
     console.log(err.message);
   }
 });
+
+//@desc       update user details
+//@route      PATCH api/v1/auth/updatedetails
+//@access     private
+exports.updatedetails = asyncHandler(async (req, res, next) => {
+  const updateFields = {
+    email: req.body.email,
+    name: req.body.name
+  };
+  const user = await Users.findByIdAndUpdate(req.user.id, updateFields, {
+    new: true,
+    runValidators: true
+  });
+
+  user.password = undefined;
+  res.status(200).json({
+    success: true,
+    data: user
+  });
+});
+
+//@desc       update user password
+//@route      PATCH api/v1/auth/updatepassword
+//@access     private
+exports.updatepassword = asyncHandler(async (req, res, next) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) {
+    return next(
+      new ErrorResponse(
+        'current password and new password fields are required',
+        400
+      )
+    );
+  }
+
+  const user = await Users.findById(req.user.id).select('+password');
+
+  if (!(await user.comparePassword(user.password, currentPassword))) {
+    return next(new ErrorResponse('Invalid credentials', 400));
+  }
+
+  user.password = newPassword;
+  await user.save();
+
+  sendToken(user, 200, res);
+});

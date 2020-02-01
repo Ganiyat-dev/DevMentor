@@ -17,10 +17,12 @@ const advanceResults = require('../middleware/advanceResults');
 
 //include other resource router
 const coursesRouter = require('./course');
+const reviewsRouter = require('./reviews');
 
 const router = express.Router();
 //re-route to course route
 router.use('/:bootcampId/courses', coursesRouter);
+router.use('/:bootcampId/reviews', reviewsRouter);
 
 router.route('/radius/:distance/:lng/:lat/:unit').get(getBootcampsByRadius);
 router

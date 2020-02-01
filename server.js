@@ -19,6 +19,8 @@ dotenv.config({ path: './config/config.env' });
 const bootcampsRoutes = require('./routes/bootcamps');
 const coursesRoutes = require('./routes/course');
 const authRoutes = require('./routes/auth');
+const usersRoutes = require('./routes/users');
+const reviewsRoutes = require('./routes/reviews');
 
 const app = express();
 
@@ -40,6 +42,8 @@ app.use(fileupload());
 app.use('/api/v1/bootcamps', bootcampsRoutes);
 app.use('/api/v1/courses', coursesRoutes);
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/auth/users', usersRoutes);
+app.use('/api/v1/reviews', reviewsRoutes);
 
 //errors
 app.use(errorHandler);
@@ -56,7 +60,7 @@ const server = app.listen(PORT, () => {
 
 //unhandled promise rejection
 process.on('unhandledRejection', err => {
-  console.log(chalk.red(`unhandled rejection: ${err.message}`));
+  console.log(chalk.red(`unhandled rejection: ${err.stack}`));
   server.close(() => {
     process.exit(1);
   });
