@@ -1,4 +1,3 @@
-const chalk = require('chalk');
 const ErrorResponse = require('../utils/errorResponse');
 
 const errorHandler = (err, req, res, next) => {
@@ -9,7 +8,7 @@ const errorHandler = (err, req, res, next) => {
 
   // 1) CAST ERROR
   if (error.name === 'CastError') {
-    const message = `No Resource found with this id: ${error.value}`;
+    const message = `No Resource found`;
     error = new ErrorResponse(message, 404);
   }
 
