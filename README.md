@@ -1,6 +1,6 @@
 # DevCoach Api
 
-> Backend Api for DevMentor application which is a bootcamp directory
+> Backend Api for DevMentor application which is a bootcamp directory. you can check out the specs for this API [here](git push -u origin master)
 
 ## Usage
 
