@@ -1,6 +1,6 @@
 # DevCoach Api
 
-> Backend Api for Devcoach application which is a bootcamp directory
+> Backend Api for DevMentor application which is a bootcamp directory
 
 ## Usage
 
