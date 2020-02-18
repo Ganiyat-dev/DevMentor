@@ -5,7 +5,7 @@
 ## API FLOW
 
 The flow of actions across the API can best be described with this diagram.
-![API flow](./public/Auth.png)
+![API flow](./public/new.png)
 
 ## Usage
 
